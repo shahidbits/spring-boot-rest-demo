@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    public ResponseEntity<Object> addUser(@RequestBody User user) {
+    public ResponseEntity<Object> addUser(@Valid @RequestBody User user) {
 
         User savedUser = service.post(user);
         URI location = ServletUriComponentsBuilder
@@ -29,7 +30,7 @@ public class UserController {
                 .buildAndExpand(savedUser.getId()).toUri();
 
         return ResponseEntity.created(location).build();
-        
+
     }
 
     @GetMapping(path = "/users/{userId}")
@@ -39,5 +40,16 @@ public class UserController {
             throw new UserNotFoundException("User not found (id: " + userId + ")");
         }
         return user;
+    }
+
+    @DeleteMapping(path = "/users/{userId}")
+    public User deleteUserById(@PathVariable int userId) {
+
+        User user = service.deleteById(userId);
+        if (user == null) {
+            throw new UserNotFoundException("User not found (id: " + userId + ")");
+        }
+        return user;
+
     }
 }
