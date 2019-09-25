@@ -39,6 +39,7 @@ public class UserController {
         if (user == null) {
             throw new UserNotFoundException("User not found (id: " + userId + ")");
         }
+
         return user;
     }
 
